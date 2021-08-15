@@ -88,7 +88,7 @@ class PersonInfoPage extends StatelessWidget {
 
   void _edit(BuildContext context){
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => EditInfoPage(contact: contact,)));
+        MaterialPageRoute(builder: (context) => EditInfoPage(isCreateNew: false,contact: contact,)));
     // Navigator.`
   }
 

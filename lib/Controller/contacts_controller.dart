@@ -17,9 +17,8 @@ class ContactsController{
       }
   }
 
-  String? getName(Contact contact){
-    return contact.displayName;
+  Future updateContact(Contact contact) async {
+    await ContactsService.updateContact(contact);
   }
-
 
 }

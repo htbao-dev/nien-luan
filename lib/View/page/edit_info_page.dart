@@ -1,23 +1,9 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nien_luan/Provider/contact_provider.dart';
 import 'package:provider/provider.dart';
-
-// class EditInfoPage extends StatelessWidget {
-//   bool isCreateNew;
-//   int index;
-//   EditInfoPage({required this.isCreateNew, required this.index});
-//   @override
-//   State<StatefulWidget> createState() {
-//     return EditInfoPageState(index: index);
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//
-//   }
-// }
 
 class EditInfoPage extends StatelessWidget {
 
@@ -28,28 +14,28 @@ class EditInfoPage extends StatelessWidget {
   late List<_TextFieldInfo> _tf_phones;
 
   EditInfoPage({required this.isCreateNew, required this.contact}) {
-    String name = "", familyName = "";
+    String? name = "", familyName = "";
     Iterable<Item>? phones;
-    _tf_phones = List.empty(growable: true);
+    _tf_phones = List.generate(2, (index) => _TextFieldInfo(
+      hintText: "Số điện thoại",
+      text: "",
+      keyboardType: TextInputType.number,
+    ));
 
-    name = contact.givenName!;
-    familyName = contact.familyName!;
+    name = contact.givenName;
+    familyName = contact.familyName;
     phones = contact.phones;
 
     _tf_name = _TextFieldInfo(
       hintText: "Tên",
-      text: name,
+      text: name??"",
     );
     _tf_familyName = _TextFieldInfo(
       hintText: "Họ",
-      text: familyName,
+      text: familyName??"",
     );
-    for (var phone in phones!) {
-      _tf_phones.add(_TextFieldInfo(
-        hintText: "Số điện thoại",
-        text: phone.value!,
-        keyboardType: TextInputType.number,
-      ));
+    for (int i = 0; i < (phones!.length > 2?2:phones.length); i++) {
+      _tf_phones.elementAt(i).text = phones.elementAt(i).value!;
     }
   }
   @override
@@ -115,7 +101,11 @@ class EditInfoPage extends StatelessWidget {
       _tf_name.isChanged = false;
       context.read<ContactProvider>().upDateContact(contact);
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đã luu")));
+      Fluttertoast.showToast(
+          msg: "Lưu thành công!",
+          toastLength: Toast.LENGTH_LONG,
+          fontSize: 16.0
+      );
     }
   }
 

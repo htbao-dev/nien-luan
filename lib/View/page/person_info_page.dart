@@ -23,7 +23,7 @@ class PersonInfoPage extends StatelessWidget {
           children: [
             Container( //person's avatar
               margin: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-              child: ContactAvatar(context.watch<ContactProvider>().contacts!.elementAt(index), 100),
+              child: ContactAvatar(size: 100, contact: context.watch<ContactProvider>().contacts!.elementAt(index), fontSize: 40,),
             ),
             Container( // person's name
               margin: const EdgeInsets.fromLTRB(15, 0, 0, 25),
@@ -73,7 +73,7 @@ class PersonInfoPage extends StatelessWidget {
               height: 200,
               child: ListView.builder(
                   itemCount: context.watch<ContactProvider>().contacts!.elementAt(index).phones!.length,
-                itemBuilder: (context, index) => _buildRow(context, context.watch<ContactProvider>().contacts!.elementAt(index).phones!.elementAt(index).value!),
+                itemBuilder: (context, indexPhone) => _buildRow(context, context.watch<ContactProvider>().contacts!.elementAt(index).phones!.elementAt(indexPhone).value!),
               )
             )
           ],
@@ -87,9 +87,11 @@ class PersonInfoPage extends StatelessWidget {
         ),);
   }
 
-  void _edit(BuildContext context){
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => EditInfoPage(isCreateNew: false, contact: context.watch<ContactProvider>().contacts!.elementAt(index),)));
+  void _edit(BuildContext context) async{
+    context.read<ContactProvider>().editContact(context, index);
+    // Provider.of<ContactProvider>(context, listen: false).contacts!.elementAt(index);
+    // Navigator.push(context,
+    //     MaterialPageRoute(builder: (context) => EditInfoPage(isCreateNew: false, contact: context.watch<ContactProvider>().contacts!.elementAt(index),)));
     // Navigator.`
   }
 

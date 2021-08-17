@@ -16,7 +16,9 @@ class ContactPage extends StatelessWidget{
           context.read<ContactProvider>().queryContacts(query: value);
         },),
         actions: <Widget>[
-          IconButton(onPressed: (){}, icon: Icon(Icons.add),)
+          IconButton(onPressed: (){
+            context.read<ContactProvider>().addContact();
+          }, icon: Icon(Icons.add),)
         ],),
       body: ListView.builder(
         itemBuilder: (context, index) {
@@ -37,7 +39,7 @@ class ContactPage extends StatelessWidget{
               MaterialPageRoute(builder: (context) => PersonInfoPage(index)));
         },
         title: Text(context.watch<ContactProvider>().contacts!.elementAt(index).displayName!),
-        leading: ContactAvatar(context.watch<ContactProvider>().contacts!.elementAt(index), 50),
+        leading: ContactAvatar(contact: context.watch<ContactProvider>().contacts!.elementAt(index), size: 50, fontSize: 20,),
       ),
     );
   }

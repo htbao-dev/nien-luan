@@ -2,9 +2,10 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 
 class ContactAvatar extends StatelessWidget {
-  ContactAvatar(this.contact, this.size);
+  ContactAvatar({required this.contact, required this.size, required this.fontSize});
   final Contact contact;
   final double size;
+  final double fontSize;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,7 +18,7 @@ class ContactAvatar extends StatelessWidget {
           backgroundImage: MemoryImage(contact.avatar!),
         )
             : CircleAvatar(
-            child: Text(contact.initials(), style: TextStyle(color: Colors.white),),
+            child: Text(contact.initials(), style: TextStyle(color: Colors.white, fontSize: fontSize),),
           backgroundColor: Colors.cyan,
             ));
   }

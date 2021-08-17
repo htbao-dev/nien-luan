@@ -30,4 +30,20 @@ class ContactProvider extends ChangeNotifier{
     await ContactsService.updateContact(contact);
     queryContacts();
   }
+
+  void editContact(BuildContext context, int index) async {
+    try{
+      await ContactsService.openExistingContact(contacts!.elementAt(index));
+      queryContacts();
+    }
+    on FormOperationException catch (e){
+      queryContacts();
+      Navigator.pop(context);
+    }
+  }
+
+  void addContact() async{
+    await ContactsService.openContactForm();
+    queryContacts();
+  }
 }

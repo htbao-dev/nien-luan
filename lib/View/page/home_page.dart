@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget{
       body: IndexedStack(
         index: context.watch<HomePageProvider>().selectIndex,
         children: [
-          ContactPage1(),
+          ContactPage(),
           Container()
         ],
       ),

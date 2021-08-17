@@ -11,18 +11,18 @@ void main() {
       ChangeNotifierProvider(create: (_)=> HomePageProvider()),
       ChangeNotifierProvider(create: (_)=> ContactProvider()),
     ],
-    child: MyApp1(),
+    child: MyApp(),
   ));
 }
 
-class MyApp1 extends StatefulWidget {
+class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return MyApp1State();
+    return MyAppState();
   }
 }
 
-class MyApp1State extends State<MyApp1>{
+class MyAppState extends State<MyApp>{
   late Widget _homePage = HomePage(key: UniqueKey());
 
   @override

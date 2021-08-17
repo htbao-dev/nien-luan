@@ -2,13 +2,14 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:nien_luan/Provider/contact_provider.dart';
 import 'package:nien_luan/View/component/contact_avatar.dart';
-
+import 'package:provider/provider.dart';
 import 'edit_info_page.dart';
 
 class PersonInfoPage extends StatelessWidget {
-  Contact contact;
-  PersonInfoPage(this.contact);
+  int index;
+  PersonInfoPage(this.index);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,14 +23,14 @@ class PersonInfoPage extends StatelessWidget {
           children: [
             Container( //person's avatar
               margin: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-              child: ContactAvatar(contact, 100),
+              child: ContactAvatar(context.watch<ContactProvider>().contacts!.elementAt(index), 100),
             ),
             Container( // person's name
               margin: const EdgeInsets.fromLTRB(15, 0, 0, 25),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  contact.displayName!,
+                  context.watch<ContactProvider>().contacts!.elementAt(index).displayName!,
                   style: const TextStyle(fontSize: 30),
                   textAlign: TextAlign.left,
                 ),
@@ -46,7 +47,7 @@ class PersonInfoPage extends StatelessWidget {
                     child: IconButton(
                         onPressed: () async {
                           String phoneNumber = "";
-                          final listPhoneNumber = contact.phones!.toList().map((e) => e.value);
+                          final listPhoneNumber = context.watch<ContactProvider>().contacts!.elementAt(index).phones!.toList().map((e) => e.value);
                           if (listPhoneNumber.length > 1){
                             phoneNumber = await showDialogChoosePhoneNumber(context, listPhoneNumber);
                           }
@@ -71,8 +72,8 @@ class PersonInfoPage extends StatelessWidget {
             SizedBox(
               height: 200,
               child: ListView.builder(
-                  itemCount: contact.phones!.length,
-                itemBuilder: (context, index) => _buildRow(context, contact.phones!.elementAt(index).value!),
+                  itemCount: context.watch<ContactProvider>().contacts!.elementAt(index).phones!.length,
+                itemBuilder: (context, index) => _buildRow(context, context.watch<ContactProvider>().contacts!.elementAt(index).phones!.elementAt(index).value!),
               )
             )
           ],
@@ -88,7 +89,7 @@ class PersonInfoPage extends StatelessWidget {
 
   void _edit(BuildContext context){
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => EditInfoPage(isCreateNew: false,contact: contact,)));
+        MaterialPageRoute(builder: (context) => EditInfoPage(isCreateNew: false, contact: context.watch<ContactProvider>().contacts!.elementAt(index),)));
     // Navigator.`
   }
 

@@ -1,33 +1,40 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nien_luan/Provider/contact_provider.dart';
+import 'package:provider/provider.dart';
 
-class EditInfoPage extends StatefulWidget {
+// class EditInfoPage extends StatelessWidget {
+//   bool isCreateNew;
+//   int index;
+//   EditInfoPage({required this.isCreateNew, required this.index});
+//   @override
+//   State<StatefulWidget> createState() {
+//     return EditInfoPageState(index: index);
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//   }
+// }
+
+class EditInfoPage extends StatelessWidget {
+
   bool isCreateNew;
-  Contact? contact;
-  EditInfoPage({required this.isCreateNew, this.contact});
-  @override
-  State<StatefulWidget> createState() {
-    return EditInfoPageState(contact: contact);
-  }
-}
-
-class EditInfoPageState extends State<EditInfoPage> {
-  late Contact? contact;
+  late Contact contact;
   late _TextFieldInfo _tf_name;
   late _TextFieldInfo _tf_familyName;
   late List<_TextFieldInfo> _tf_phones;
-  EditInfoPageState({this.contact}) {
+
+  EditInfoPage({required this.isCreateNew, required this.contact}) {
     String name = "", familyName = "";
     Iterable<Item>? phones;
     _tf_phones = List.empty(growable: true);
 
-    if (contact == null) {
-      contact = Contact();
-    }
-    name = contact!.givenName!;
-    familyName = contact!.familyName!;
-    phones = contact!.phones;
+    name = contact.givenName!;
+    familyName = contact.familyName!;
+    phones = contact.phones;
 
     _tf_name = _TextFieldInfo(
       hintText: "Tên",
@@ -61,7 +68,7 @@ class EditInfoPageState extends State<EditInfoPage> {
               TextButton(
                   onPressed: () {
                     if (isChangedData()) {
-                      _Save();
+                      _Save(context);
                     }
                   },
                   child: Text(
@@ -93,23 +100,22 @@ class EditInfoPageState extends State<EditInfoPage> {
     }
   }
 
-  void _Save() async {
+  void _Save(BuildContext context) async {
     print("Save");
-    if (widget.isCreateNew) {
+    if (isCreateNew) {
 
     } else {
-      contact!.familyName = _tf_familyName.text;
-      contact!.givenName = _tf_name.text;
-      for (int i = 0; i < contact!.phones!.length; i++){
-        contact!.phones!.elementAt(i).value = _tf_phones.elementAt(i).text;
+      contact.familyName = _tf_familyName.text;
+      contact.givenName = _tf_name.text;
+      for (int i = 0; i < contact.phones!.length; i++){
+        contact.phones!.elementAt(i).value = _tf_phones.elementAt(i).text;
         _tf_phones.elementAt(i).isChanged = false;
       }
       _tf_familyName.isChanged = false;
       _tf_name.isChanged = false;
-      await ContactsService.updateContact(contact!);
-      setState(() {
-
-      });
+      context.read<ContactProvider>().upDateContact(contact);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đã luu")));
     }
   }
 

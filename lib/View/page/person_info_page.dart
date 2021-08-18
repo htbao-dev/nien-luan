@@ -1,13 +1,16 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nien_luan/Provider/contact_provider.dart';
 import 'package:nien_luan/View/component/contact_avatar.dart';
 import 'package:provider/provider.dart';
 import 'edit_info_page.dart';
 
 class PersonInfoPage extends StatelessWidget {
+  var _tapPosition;
   int index;
   PersonInfoPage(this.index);
   @override
@@ -96,24 +99,42 @@ class PersonInfoPage extends StatelessWidget {
   }
 
   Widget _buildRow(BuildContext context, String phoneNumber){
+
     double _iconSize = 25;
-    return ListTile(
-        onTap: (){
-          FlutterPhoneDirectCaller.callNumber(phoneNumber);
-        },
-        title: Row(
-          children: [
-            Icon(Icons.phone, size: _iconSize,),
-            Container(
-              margin: const EdgeInsets.only(left: 20),
-              child:
-              Text(phoneNumber, style: const TextStyle(fontSize: 18),),
-            ),
-            const Spacer(),
-            IconButton(onPressed: (){}, icon: Icon(Icons.message_outlined, color: Theme.of(context).primaryColor, size: _iconSize,)),
-          ],
-        )
-        );
+    return GestureDetector(
+      onTapDown: _storePosition,
+      child: ListTile(
+          onTap: (){
+            FlutterPhoneDirectCaller.callNumber(phoneNumber);
+          },
+          onLongPress: () async {
+            final RenderBox? overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox?;
+            int? value = await showMenu(context: context, position: RelativeRect.fromRect(_tapPosition & Size(40, 40), Offset.zero & overlay!.size),
+                items: [
+                  PopupMenuItem<int>(child: Text("copy"),value: 1,),
+                ]);
+            if (value == 1){
+              Clipboard.setData(ClipboardData(text: phoneNumber));
+              Fluttertoast.showToast(
+                  msg: "Đã copy!",
+                  toastLength: Toast.LENGTH_LONG,
+                  fontSize: 16.0);
+            }
+          },
+          title: Row(
+            children: [
+              Icon(Icons.phone, size: _iconSize,),
+              Container(
+                margin: const EdgeInsets.only(left: 20),
+                child:
+                Text(phoneNumber, style: const TextStyle(fontSize: 18),),
+              ),
+              const Spacer(),
+              IconButton(onPressed: (){}, icon: Icon(Icons.message_outlined, color: Theme.of(context).primaryColor, size: _iconSize,)),
+            ],
+          )
+      ),
+    );
   }
 
   Future<String> showDialogChoosePhoneNumber(BuildContext context, Iterable<String?> listPhoneNumber) async{
@@ -144,6 +165,12 @@ class PersonInfoPage extends StatelessWidget {
     });
     return res;
   }
+
+  void _storePosition(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
+  }
+
+
 
   final BoxDecoration _borderBotTop = const BoxDecoration(
       border: Border(

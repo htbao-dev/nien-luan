@@ -38,7 +38,8 @@ class ContactProvider extends ChangeNotifier{
     }
     on FormOperationException catch (e){
       queryContacts();
-      Navigator.pop(context);
+
+      print(e.errorCode);
     }
   }
 

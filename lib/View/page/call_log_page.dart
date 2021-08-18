@@ -3,70 +3,50 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nien_luan/Controller/call_controller.dart';
 import 'package:nien_luan/Controller/calllog_controller.dart';
+import 'package:nien_luan/Provider/call_log_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:nien_luan/View/component/search_textfield.dart';
 
-class CallLogPage extends StatefulWidget {
-  CallLogPage({required Key key}):super(key: key);
-  @override
-  State<StatefulWidget> createState() {
-    return CallLogPageState();
-  }
-}
-
-class CallLogPageState extends State<CallLogPage> {
+class CallLogPage extends StatelessWidget{
   CallLogController cl = CallLogController();
-  late Future<Iterable<CallLogEntry>?> logs;
-
-  @override
-  void initState() {
-    super.initState();
-    logs = cl.getCallLogs();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           // title: SearchTextForm(),
         ),
-        body: FutureBuilder(
-          future: logs,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              Iterable<CallLogEntry>? entries =
-                  snapshot.data as Iterable<CallLogEntry>?;
-              return ListView.builder(
-                  itemCount: entries!.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.only(top: 5, bottom: 5),
-                      child: ListTile(
-                        title: cl.getTitle(entries.elementAt(index)),
-                        subtitle: Row(
-                          children: [
-                            IconCallType(entries.elementAt(index).callType!),
-                            Text(
-                                cl.getTime(entries.elementAt(index).duration!).toString()
-                                    + '\n' +
-                                    cl.formatDate(
-                                        new DateTime.fromMillisecondsSinceEpoch(
-                                            entries.elementAt(index).timestamp!)))
-                          ],
-                        ),
-                        trailing: IconButton(icon: Icon(Icons.call),
-                          onPressed: (){
-                          print(entries.elementAt(index).number!);
-                            CallController.call(entries.elementAt(index).number!);
-                          },),),
-                    );
-                  });
-            } else {
-              return Center(
-                child: Text("No Data"),
-              );
-            }
-          },
-        )
+        body: ListView.builder(
+            itemBuilder: (context, index) {
+              return context.watch<CallLogProvider>().callLogEntries != null
+                  ? _buildRow(context, index)
+                  :Container();
+            },
+        itemCount: context.watch<CallLogProvider>().callLogEntries != null?context.watch<CallLogProvider>().callLogEntries!.length:0,)
+
+    );
+  }
+
+  _buildRow(BuildContext context, int index) {
+    return Container(
+      margin: EdgeInsets.only(top: 5, bottom: 5),
+      child: ListTile(
+        title: cl.getTitle(context.watch<CallLogProvider>().callLogEntries!.elementAt(index)),
+        subtitle: Row(
+          children: [
+            IconCallType(context.watch<CallLogProvider>().callLogEntries!.elementAt(index).callType!),
+            Text(
+                cl.getTime(context.watch<CallLogProvider>().callLogEntries!.elementAt(index).duration!).toString()
+                    + '\n' +
+                    cl.formatDate(
+                        new DateTime.fromMillisecondsSinceEpoch(
+                            context.watch<CallLogProvider>().callLogEntries!.elementAt(index).timestamp!)))
+          ],
+        ),
+        trailing: IconButton(icon: Icon(Icons.call),
+          onPressed: (){
+            print(context.watch<CallLogProvider>().callLogEntries!.elementAt(index).number!);
+            CallController.call(context.watch<CallLogProvider>().callLogEntries!.elementAt(index).number!);
+          },),),
     );
   }
 
@@ -87,4 +67,5 @@ class CallLogPageState extends State<CallLogPage> {
     }
     return res;
   }
+
 }

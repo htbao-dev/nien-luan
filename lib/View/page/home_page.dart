@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nien_luan/Provider/home_page_provider.dart';
 import 'package:nien_luan/View/component/number_keyboard.dart';
+import 'package:nien_luan/View/page/call_log_page.dart';
 import 'package:provider/provider.dart';
 
 import 'contacts_page.dart';
@@ -14,7 +15,7 @@ class HomePage extends StatelessWidget{
         index: context.watch<HomePageProvider>().selectIndex,
         children: [
           ContactPage(),
-          Container()
+          CallLogPage()
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

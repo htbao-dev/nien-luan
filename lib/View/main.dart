@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nien_luan/Provider/call_log_provider.dart';
 import 'package:nien_luan/Provider/contact_provider.dart';
 import 'package:nien_luan/Provider/home_page_provider.dart';
 import 'package:nien_luan/View/page/home_page.dart';
@@ -10,6 +11,7 @@ void main() {
     providers: [
       ChangeNotifierProvider(create: (_)=> HomePageProvider()),
       ChangeNotifierProvider(create: (_)=> ContactProvider()),
+      ChangeNotifierProvider(create: (_)=>CallLogProvider())
     ],
     child: MyApp(),
   ));

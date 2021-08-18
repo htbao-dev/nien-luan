@@ -15,12 +15,6 @@ class CallLogController{
   //   }
   // }
 
-  Future<Iterable<CallLogEntry>?> getCallLogs() async {
-    var isGranted = await Permission.phone.isGranted;
-    if (isGranted)
-      return await CallLog.get();
-    else return null;
-  }
   String formatDate(DateTime dt){
 
     return DateFormat('d-MMM-y H:m:s').format(dt);

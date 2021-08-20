@@ -31,16 +31,25 @@ class ContactProvider extends ChangeNotifier{
     queryContacts();
   }
 
-  void editContact(BuildContext context, int index) async {
+  void editContact(int index) async {
     try{
       await ContactsService.openExistingContact(contacts!.elementAt(index));
       queryContacts();
     }
     on FormOperationException catch (e){
       queryContacts();
-
       print(e.errorCode);
     }
+    finally{
+      queryContacts();
+      print(_contacts!.length);
+    }
+  }
+
+  void deleteContact(int index) async{
+    await ContactsService.deleteContact(contacts!.first);
+    queryContacts();
+    // print(_contacts!.length);
   }
 
   void addContact() async{

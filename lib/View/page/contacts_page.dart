@@ -26,7 +26,7 @@ class ContactPage extends StatelessWidget{
           ? _buildRow(context, index)
           : Container();
         },
-      itemCount: context.watch<ContactProvider>().contacts != null? context.watch<ContactProvider>().contacts!.length:0,)
+      itemCount: context.watch<ContactProvider>().contacts?.length??0,)
     );
   }
 

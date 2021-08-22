@@ -1,39 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:nien_luan/Provider/call_log_provider.dart';
-import 'package:nien_luan/Provider/contact_provider.dart';
-import 'package:nien_luan/Provider/home_page_provider.dart';
-import 'package:nien_luan/View/page/home_page.dart';
+import 'package:nien_luan/View/page/Contacts/home_page.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 
-void main() {
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_)=> HomePageProvider()),
-      ChangeNotifierProvider(create: (_)=> ContactProvider()),
-      ChangeNotifierProvider(create: (_)=>CallLogProvider())
-    ],
-    child: MyApp(),
-  ));
-}
-
-class MyApp extends StatefulWidget {
+class ContactApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return MyAppState();
+    return _ContactAppState();
   }
 }
 
-class MyAppState extends State<MyApp>{
+class _ContactAppState extends State<ContactApp> {
   late Widget _homePage = HomePage(key: UniqueKey());
 
   @override
   void initState() {
     super.initState();
     checkPermission().then((value) => setState(() {
-      _homePage = HomePage(key: UniqueKey());
-    }));
+          _homePage = HomePage(key: UniqueKey());
+        }));
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -3,131 +3,123 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nien_luan/Provider/call_log_provider.dart';
 import 'package:nien_luan/Provider/contact_provider.dart';
 import 'package:nien_luan/View/component/contact_avatar.dart';
 import 'package:provider/provider.dart';
 
-class PersonInfoPage extends StatelessWidget {
+class ContactInfoPage extends StatelessWidget {
   var _tapPosition;
   int index;
-  PersonInfoPage(this.index);
+  ContactInfoPage(this.index);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // actions: <Widget>[
-        //   MaterialButton(
-        //     onPressed: ()=>_delete(context),
-        //     child: Text(
-        //       "Xoá",
-        //       style: TextStyle(color: Colors.white, fontSize: 16),
-        //     ),
-        //   )
-        // ],
-
-        // actions: [
-        //   IconButton(onPressed: (){}, icon: const Icon(Icons.more_vert))
-        // ],
       ),
-      body: Container(
-          child: Column(
-        children: [
-          Container(
-            //person's avatar
-            margin: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-            child: ContactAvatar(
-              size: 100,
-              contact:
-                  context.watch<ContactProvider>().contacts!.elementAt(index),
-              fontSize: 40,
-            ),
-          ),
-          Container(
-            // person's name
-            margin: const EdgeInsets.fromLTRB(15, 0, 0, 25),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                context
-                    .watch<ContactProvider>()
-                    .contacts!
-                    .elementAt(index)
-                    .displayName!,
-                style: const TextStyle(fontSize: 30),
-                textAlign: TextAlign.left,
+      body: SafeArea(
+        child: Container(
+            child: Column(
+          children: [
+            Container(
+              //person's avatar
+              margin: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+              child: ContactAvatar(
+                size: 100,
+                contact:
+                    context.watch<ContactProvider>().contacts!.elementAt(index),
+                fontSize: 40,
               ),
             ),
-          ),
-          Container(
-            // action buttons
-            padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-            decoration: _borderBotTop,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  // call button
-                  margin: const EdgeInsets.fromLTRB(0, 5, 40, 5),
-                  child: IconButton(
-                      onPressed: () async {
-                        String phoneNumber = "";
-                        final listPhoneNumber = context
-                            .watch<ContactProvider>()
-                            .contacts!
-                            .elementAt(index)
-                            .phones!
-                            .toList()
-                            .map((e) => e.value);
-                        if (listPhoneNumber.length > 1) {
-                          phoneNumber = await showDialogChoosePhoneNumber(
-                              context, listPhoneNumber);
-                        } else if (listPhoneNumber.length == 1) {
-                          phoneNumber = listPhoneNumber.elementAt(0)!;
-                        }
-                        if (phoneNumber.isNotEmpty)
-                          FlutterPhoneDirectCaller.callNumber(phoneNumber);
-                      },
-                      icon: Icon(
-                        Icons.call_outlined,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      iconSize: 28),
+            Container(
+              // person's name
+              margin: const EdgeInsets.fromLTRB(15, 0, 0, 25),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  context
+                      .watch<ContactProvider>()
+                      .contacts!
+                      .elementAt(index)
+                      .displayName!,
+                  style: const TextStyle(fontSize: 30),
+                  textAlign: TextAlign.left,
                 ),
-                Container(
-                  // message button
-                  margin: const EdgeInsets.fromLTRB(40, 5, 0, 5),
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.message_outlined,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      iconSize: 28),
-                )
-              ],
+              ),
             ),
-          ),
-          SizedBox(
-              height: 200,
-              child: ListView.builder(
-                itemCount: context
-                    .watch<ContactProvider>()
-                    .contacts!
-                    .elementAt(index)
-                    .phones!
-                    .length,
-                itemBuilder: (context, indexPhone) => _buildRow(
-                    context,
-                    context
-                        .watch<ContactProvider>()
-                        .contacts!
-                        .elementAt(index)
-                        .phones!
-                        .elementAt(indexPhone)
-                        .value!),
-              ))
-        ],
-      )),
+            Container(
+              // action buttons
+              padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+              decoration: _borderBotTop,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    // call button
+                    margin: const EdgeInsets.fromLTRB(0, 5, 40, 5),
+                    child: IconButton(
+                        onPressed: () async {
+                          String phoneNumber = "";
+                          final listPhoneNumber = context
+                              .watch<ContactProvider>()
+                              .contacts!
+                              .elementAt(index)
+                              .phones!
+                              .toList()
+                              .map((e) => e.value);
+                          if (listPhoneNumber.length > 1) {
+                            phoneNumber = await showDialogChoosePhoneNumber(
+                                context, listPhoneNumber);
+                          } else if (listPhoneNumber.length == 1) {
+                            phoneNumber = listPhoneNumber.elementAt(0)!;
+                          }
+                          if (phoneNumber.isNotEmpty)
+                            FlutterPhoneDirectCaller.callNumber(phoneNumber).then((value){
+                              context.read<CallLogProvider>().queryCallLog();
+                            });
+                        },
+                        icon: Icon(
+                          Icons.call_outlined,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        iconSize: 28),
+                  ),
+                  Container(
+                    // message button
+                    margin: const EdgeInsets.fromLTRB(40, 5, 0, 5),
+                    child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.message_outlined,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        iconSize: 28),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+                height: 200,
+                child: ListView.builder(
+                  itemCount: context
+                      .watch<ContactProvider>()
+                      .contacts!
+                      .elementAt(index)
+                      .phones!
+                      .length,
+                  itemBuilder: (context, indexPhone) => _buildRow(
+                      context,
+                      context
+                          .watch<ContactProvider>()
+                          .contacts!
+                          .elementAt(index)
+                          .phones!
+                          .elementAt(indexPhone)
+                          .value!),
+                ))
+          ],
+        )),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           _edit(context);

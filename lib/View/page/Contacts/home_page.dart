@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:nien_luan/Provider/home_page_provider.dart';
 import 'package:nien_luan/View/component/number_keyboard.dart';
-import 'package:nien_luan/View/page/call_log_page.dart';
+import 'package:nien_luan/View/page/Contacts/call_log_page.dart';
 import 'package:provider/provider.dart';
 
 import 'contacts_page.dart';
 
-class HomePage extends StatelessWidget{
+class HomePage extends StatelessWidget {
   HomePage({required Key key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: context.watch<HomePageProvider>().selectIndex,
-        children: [
-          ContactPage(),
-          CallLogPage()
-        ],
+      body: SafeArea(
+        child: IndexedStack(
+          index: context.watch<HomePageProvider>().selectIndex,
+          children: [ContactPage(), CallLogPage()],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -36,22 +35,21 @@ class HomePage extends StatelessWidget{
   }
 }
 
-class MyFloatingActionButton extends StatelessWidget{
+class MyFloatingActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return context.watch<HomePageProvider>().showFab
         ? FloatingActionButton(
-      child: const Icon(Icons.phone),
-      onPressed: () {
-        var bottomSheetController = showBottomSheet(
-            context: context, builder: (context) => NumberKeyboard());
-        context.read<HomePageProvider>().showFab = false;
-        bottomSheetController.closed.then((value) {
-          context.read<HomePageProvider>().showFab = true;
-        });
-      },
-    )
+            child: const Icon(Icons.phone),
+            onPressed: () {
+              var bottomSheetController = showBottomSheet(
+                  context: context, builder: (context) => NumberKeyboard());
+              context.read<HomePageProvider>().showFab = false;
+              bottomSheetController.closed.then((value) {
+                context.read<HomePageProvider>().showFab = true;
+              });
+            },
+          )
         : Container();
   }
-
 }

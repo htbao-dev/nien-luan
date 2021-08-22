@@ -15,7 +15,6 @@ class CallLogProvider extends ChangeNotifier{
   void queryCallLog() async {
     var isGranted = await Permission.phone.isGranted;
     if (isGranted){
-
       _callLogEntries = await CallLog.get();
     }
     else{

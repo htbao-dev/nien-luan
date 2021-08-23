@@ -7,7 +7,7 @@ import 'package:nien_luan/Provider/call_log_provider.dart';
 import 'package:nien_luan/Provider/contact_provider.dart';
 import 'package:nien_luan/View/component/contact_avatar.dart';
 import 'package:provider/provider.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 class ContactInfoPage extends StatelessWidget {
   var _tapPosition;
   int index;
@@ -60,8 +60,7 @@ class ContactInfoPage extends StatelessWidget {
                     child: IconButton(
                         onPressed: () async {
                           String phoneNumber = "";
-                          final listPhoneNumber = context
-                              .watch<ContactProvider>()
+                          final listPhoneNumber = Provider.of<ContactProvider>(context, listen: false)
                               .contacts!
                               .elementAt(index)
                               .phones!
@@ -88,7 +87,22 @@ class ContactInfoPage extends StatelessWidget {
                     // message button
                     margin: const EdgeInsets.fromLTRB(40, 5, 0, 5),
                     child: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          String phoneNumber = "";
+                          final listPhoneNumber = Provider.of<ContactProvider>(context, listen: false)
+                              .contacts!
+                              .elementAt(index)
+                              .phones!
+                              .toList()
+                              .map((e) => e.value);
+                          if (listPhoneNumber.length > 1) {
+                            phoneNumber = await showDialogChoosePhoneNumber(
+                                context, listPhoneNumber);
+                          } else if (listPhoneNumber.length == 1) {
+                            phoneNumber = listPhoneNumber.elementAt(0)!;
+                          }
+                          sendsms(phoneNumber);
+                        },
                         icon: Icon(
                           Icons.message_outlined,
                           color: Theme.of(context).primaryColor,
@@ -128,6 +142,21 @@ class ContactInfoPage extends StatelessWidget {
         icon: const Icon(Icons.edit),
       ),
     );
+  }
+
+  void sendsms(String phoneNumber) async {
+    if (phoneNumber.isNotEmpty){ 
+      String url = "sms:${phoneNumber}"; 
+      if (await canLaunch(url)){
+        await launch(url);
+      }
+      else{
+        Fluttertoast.showToast(
+                  msg: "Không thể thực hiện",
+                  toastLength: Toast.LENGTH_LONG,
+                  fontSize: 16.0);
+      }
+    }
   }
 
   void _edit(BuildContext context) {
@@ -187,7 +216,9 @@ class ContactInfoPage extends StatelessWidget {
               ),
               const Spacer(),
               IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    sendsms(phoneNumber);
+                  },
                   icon: Icon(
                     Icons.message_outlined,
                     color: Theme.of(context).primaryColor,

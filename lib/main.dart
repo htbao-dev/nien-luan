@@ -5,6 +5,7 @@ import 'package:nien_luan/Provider/home_page_provider.dart';
 import 'package:nien_luan/View/page/Contacts/contacts_app.dart';
 import 'package:provider/provider.dart';
 
+import 'Provider/weather_provider.dart';
 import 'View/page/Weather/weather_app.dart';
 
 void main() {
@@ -12,7 +13,8 @@ void main() {
     providers: [
       ChangeNotifierProvider(create: (_) => HomePageProvider()),
       ChangeNotifierProvider(create: (_) => ContactProvider()),
-      ChangeNotifierProvider(create: (_) => CallLogProvider())
+      ChangeNotifierProvider(create: (_) => CallLogProvider()),
+      ChangeNotifierProvider(create: (_) => WeatherProvider())
     ],
     child: MyApp(),
   ));
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
           child: Column(
             children: [
               createAppIcon(context, Icons.contacts, "Danh bạ", ContactApp()),
-              createAppIcon(context, Icons.wb_sunny, "Thời tiết", WheatherApp())
+              createAppIcon(context, Icons.wb_sunny, "Thời tiết", WeatherApp())
             ],
           ),
         ),

@@ -26,14 +26,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         home: Builder(
       builder: (context) => Scaffold(
+        appBar: AppBar(
+          title: Text("Demo app niên luận"),
+        ),
         body: SafeArea(
-          child: Column(
+            child: Container(
+          padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+          child: Wrap(
+            spacing: 30,
             children: [
               createAppIcon(context, Icons.contacts, "Danh bạ", ContactApp()),
               createAppIcon(context, Icons.wb_sunny, "Thời tiết", WeatherApp())
             ],
           ),
-        ),
+        )),
       ),
     ));
   }
@@ -49,7 +55,16 @@ class MyApp extends StatelessWidget {
               ));
         },
         child: Column(
-          children: [Icon(IconData), Text(Title)],
+          children: [
+            Icon(
+              IconData,
+              size: 40,
+            ),
+            Container(
+              child: Text(Title),
+              margin: EdgeInsets.only(top: 8),
+            )
+          ],
         ));
   }
 }

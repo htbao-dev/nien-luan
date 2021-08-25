@@ -1,6 +1,9 @@
-# nien_luan
+# Project demo niên luận
 
-project nien luan
+Đây project flutter đầu tiên, dùng để demo cho học phần "Thực tập viết niên luận".
+App gồm 2 chức năng là:
+ - Quản lý danh bạ
+ - Xem thông tin thời tiết.
 
 ## Getting Started
 
